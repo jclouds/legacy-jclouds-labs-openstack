@@ -32,7 +32,7 @@ import org.jclouds.Fallbacks.FalseOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.openstack.keystone.v2_0.filters.AuthenticateRequest;
-import org.jclouds.openstack.redddwarf.v1.binders.BindCreateInstanceToJson;
+import org.jclouds.openstack.reddwarf.v1.binders.BindCreateInstanceToJson;
 import org.jclouds.openstack.reddwarf.v1.domain.Instance;
 import org.jclouds.openstack.reddwarf.v1.functions.ParsePasswordFromRootedInstance;
 import org.jclouds.rest.ResourceNotFoundException;
