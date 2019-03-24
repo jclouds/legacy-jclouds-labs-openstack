@@ -52,8 +52,8 @@ public class InstanceApiLiveTest extends BaseRedDwarfApiLiveTest {
         for (String zone : api.getConfiguredZones()) {
             List<Instance> zoneList = Lists.newArrayList();
             InstanceApi instanceApi = api.getInstanceApiForZone(zone);
-            zoneList.add(instanceApi.create("1", 1, "first"));
-            Instance second = instanceApi.create("1", 1, "second");
+            zoneList.add(instanceApi.create("1", 1, "first_instance_testing"));
+            Instance second = instanceApi.create("1", 1, "second_instance_testing");
             InstancePredicates.awaitAvailable(instanceApi).apply(second);
             instanceApi.enableRoot(second.getId());
             zoneList.add(second);            
@@ -119,9 +119,14 @@ public class InstanceApiLiveTest extends BaseRedDwarfApiLiveTest {
     public void testGetRootStatus() {
         for (String zone : api.getConfiguredZones()) {
             InstanceApi instanceApi = api.getInstanceApiForZone(zone);
-            Iterator<Instance> iterator = instanceApi.list().iterator(); 
-            Instance first = iterator.next();
-            Instance second = iterator.next();
+            Iterator<Instance> iterator = instanceApi.list().iterator();
+            Instance first, second;
+            do{
+               first = iterator.next(); 
+            } while(!first.getName().contains("instance_testing"));
+            do{
+               second = iterator.next(); 
+            } while(!second.getName().contains("instance_testing"));
             assertTrue(instanceApi.isRooted(first.getId()) || instanceApi.isRooted(second.getId()));
         }
     }

@@ -16,37 +16,52 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.jclouds.openstack.redddwarf.v1.binders;
+package org.jclouds.openstack.reddwarf.v1.binders;
 
 import java.util.Map;
+import java.util.Set;
+
 import org.jclouds.http.HttpRequest;
-import org.jclouds.openstack.reddwarf.v1.internal.Volume;
+import org.jclouds.openstack.reddwarf.v1.domain.Database;
+import org.jclouds.openstack.reddwarf.v1.domain.User;
 import org.jclouds.rest.MapBinder;
 import org.jclouds.rest.binders.BindToJsonPayload;
+
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
 /**
  * @author Zack Shoylev
  */
-public class BindCreateInstanceToJson implements MapBinder {
+public class BindCreateUserToJson implements MapBinder {
     
     @Inject
     private BindToJsonPayload jsonBinder;
     
+    @SuppressWarnings("unchecked")
     @Override    
     public <R extends HttpRequest> R bindToRequest(R request, Map<String, Object> postParams) {
-       Map<String, Object> databaseInstance = Maps.newHashMap();
-       databaseInstance.put("flavorRef", postParams.get("flavorRef"));
-       databaseInstance.put("volume", new Volume((Integer) postParams.get("size")));
-       if (postParams.get("name") != null)
-           databaseInstance.put("name", postParams.get("name"));
-       return jsonBinder.bindToRequest(request, ImmutableMap.of("instance", databaseInstance));
+       Set<User> users = Sets.newHashSet();
+       if( postParams.get("name") != null ) {  
+          Database database = Database.builder().name((String) postParams.get("databaseName")).build();
+          Set<Database> databases = Sets.newHashSet();
+          databases.add(database);
+          User user = User.builder()
+                  .name((String) postParams.get("name"))
+                  .password((String) postParams.get("password"))
+                  .databases(databases)
+                  .build();
+          users.add(user);
+       }
+       else if( postParams.get("users") != null ) {
+          users = (Set<User>) postParams.get("users");
+       }
+       return jsonBinder.bindToRequest(request, ImmutableMap.of("users", users));
     }
 
     @Override
     public <R extends HttpRequest> R bindToRequest(R request, Object toBind) {
-       throw new IllegalStateException("CreateInstance is a POST operation");
+       throw new IllegalStateException("Create user is a POST operation");
     }    
 }

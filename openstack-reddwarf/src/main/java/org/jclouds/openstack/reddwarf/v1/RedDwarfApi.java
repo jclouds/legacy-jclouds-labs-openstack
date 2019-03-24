@@ -20,16 +20,15 @@ package org.jclouds.openstack.reddwarf.v1;
 
 import java.io.Closeable;
 import java.util.Set;
-
 import org.jclouds.javax.annotation.Nullable;
 import org.jclouds.location.Zone;
 import org.jclouds.location.functions.ZoneToEndpoint;
 import org.jclouds.openstack.keystone.v2_0.domain.Tenant;
 import org.jclouds.openstack.reddwarf.v1.features.FlavorApi;
 import org.jclouds.openstack.reddwarf.v1.features.InstanceApi;
+import org.jclouds.openstack.reddwarf.v1.features.UserApi;
 import org.jclouds.rest.annotations.Delegate;
 import org.jclouds.rest.annotations.EndpointParam;
-
 import com.google.common.base.Optional;
 import com.google.inject.Provides;
 
@@ -59,6 +58,13 @@ public interface RedDwarfApi extends Closeable{
     */
    @Delegate
    InstanceApi getInstanceApiForZone(
+         @EndpointParam(parser = ZoneToEndpoint.class) @Nullable String zone);
+   
+   /**
+    * Provides access to User features.
+    */
+   @Delegate
+   UserApi getUserApiForZone(
          @EndpointParam(parser = ZoneToEndpoint.class) @Nullable String zone);
    
    /**
